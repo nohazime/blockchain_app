@@ -171,6 +171,6 @@ def get_current_chain():
 
 # runs this node on local host port 5000
 if __name__ == '__main__':
-    node.run(host='0.0.0.0.', port=5000)
+    node.run(host='localhost', port=5000)
     #node.run(debug = True)
      
