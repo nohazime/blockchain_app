@@ -1,4 +1,3 @@
-
 import hashlib
 import json
 from time import time
@@ -7,12 +6,7 @@ from uuid import uuid4
 
 import requests
 from flask import Flask, jsonify, request
-from urllib.parse import urlparse
-import os
-import pickle
-from collections import OrderedDict
-import datetime as date
-from random import *
+
 
 class Blockchain:
     def __init__(self):
@@ -37,7 +31,6 @@ class Blockchain:
             self.nodes.add(parsed_url.path)
         else:
             raise ValueError('Invalid URL')
-
 
     def valid_chain(self, chain):
         """
@@ -287,36 +280,12 @@ def consensus():
     return jsonify(response), 200
 
 
-#syncs this node with another node
-#sync means we will copy the current chain of the other node
-@app.route('/nodes/sync', methods=['POST'])
-def get_current_chain():
-    value = request.get_json()
-
-    nodes = value.get("nodes")
-
-    if nodes:
-        answer = value['nodes']
-        parsed_url = urlparse(answer).netloc
-
-        response = requests.get('http://{}/chain'.format(parsed_url))
-
-        if response.status_code == 200:
-            length = response.json()['length']
-            Blockchain.chain = response.json()['chain']
-
-            new_chain = {
-                "message": "Sync successful.",
-                "chain": Blockchain.chain,
-                "length": len(Blockchain.chain)
-            }
-            return jsonify(new_chain), 201
-
-
 if __name__ == '__main__':
+    from argparse import ArgumentParser
 
+    parser = ArgumentParser()
+    parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
+    args = parser.parse_args()
+    port = args.port
 
-    app.run(host='0.0.0.0', port=5000)
-    #app.run(debug=True)
-
-
+    app.run(host='0.0.0.0', port=port)
